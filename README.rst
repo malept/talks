@@ -5,7 +5,7 @@ These are talks I've given that contain non-proprietary content (i.e., ones that
 NDA-level information).
 
 License
-=======
+-------
 
 Unless otherwise specified, the example code is copyrighted under the `Apache License 2.0`_, and the
 content is copyrighted under the `Creative Commons Attribution Share-Alike 4.0 International`_
