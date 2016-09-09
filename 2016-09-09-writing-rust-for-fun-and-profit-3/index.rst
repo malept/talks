@@ -39,7 +39,7 @@ September 9, 2016
 Thermite
 ~~~~~~~~
 
-:raw-html:`<iframe src="https://i.imgur.com/NzXAzNK.gifv" width="800" height="500"></iframe>`
+:raw-html:`<blockquote class="imgur-embed-pub" lang="en" data-id="NzXAzNK">Example of Thermite</blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>`
 
 (`Reddit source <https://redd.it/3aiu78>`_, `YouTube source <https://youtu.be/tj7S_DNFgEU?t=3m52s>`_)
 
@@ -90,8 +90,8 @@ Ha, ha. What does it do?
 
 .. note::
 
-    Now that I've thoroughly explained the joke and made is painfully unfunny, I might as well
-    describe what it does. The easiest way to do that is to quote the README.
+    Now that I've thoroughly explained the joke, I might as well describe what it does. The easiest
+    way to do that is to quote the README.
 
 ----
 
@@ -99,6 +99,18 @@ Ha, ha. What does it do?
 
 Thermite: Features
 ~~~~~~~~~~~~~~~~~~
+
+* Make it easy to configure and run ``cargo``
+* Install the compiled extension in a location easily accessible by Ruby
+* Allow users to install precompiled binaries from GitHub releases or an arbitrary URL (coming soon)
+
+.. note::
+
+    Although it's primarily a wrapper around ``cargo``, the other big feature is that it allows the
+    library developer to specify a location where users will automatically download and install
+    precompiled versions of the extension, if ``cargo`` is not on their system. This is particularly
+    useful when you don't want to impose a new language dependency on all of the developers, or the
+    production infrastructure.
 
 ----
 
@@ -152,9 +164,9 @@ Case Study: Transliteration
 UTF-8 → ASCII
 ~~~~~~~~~~~~~
 
-* é → e
-* — → -
-* ® → (R)
+* ``é`` → ``e``
+* ``—`` → ``-``
+* ``®`` → ``(R)``
 
 .. note::
 
@@ -174,13 +186,19 @@ UTF-8 → ASCII
 
 * Dependency of ActiveSupport
 * Pure Ruby
-* ``I18n.transliterate(input_string)``
+
+.. code:: ruby
+
+    I18n.backend.store_translations(:en, i18n: {
+      transliterate: { rule: custom_translations }
+    })
+    I18n.transliterate(input_string)
 
 .. note::
 
     How does Rails help us with that? In ActiveSupport, the ``i18n`` gem is included and
     preconfigured so that we can transliterate strings with accented characters with a simple method
-    call.
+    call. If you want custom transliterations, it's slightly more work.
 
 ----
 
@@ -190,9 +208,21 @@ UTF-8 → ASCII
 ``i18n`` Profile
 ~~~~~~~~~~~~~~~~
 
+::
+
+    allocated memory by file
+    -----------------------------------
+    [...]
+    6266676  RUBY/openssl/buffering.rb
+    6086560  GEMS/i18n-0.7.0/lib/i18n/backend/base.rb
+    5742584  GEMS/activesupport-4.2.5/lib/active_support/dependencies.rb
+    5291777  GEMS/i18n-0.7.0/lib/i18n/backend/transliterator.rb
+    [...]
+
+
 .. note::
 
-    I've been helping Dan with some optimizations lately. The low-hanging fruit was replacing
+    I've been helping a coworker with some optimizations lately. The low-hanging fruit was replacing
     ``gsub!`` calls with ``tr!`` calls when possible, which saved a bunch of memory allocations and
     presumably some CPU time. When I was looking at the memory profiler output, I noticed that the
     ``i18n`` gem allocated and retained more memory than I was expecting, so I dug into it. It turns
@@ -210,7 +240,10 @@ Enter: T12r
 * Transliterator → T12r
 * Rust: 45 LoC (not including tests)
 * Ruby: 27 LoC (not including tests)
-* ``T12r.transliterate(input_string, custom_translations)``
+
+.. code:: ruby
+
+    T12r.transliterate(input_string, custom_translations)
 
 .. note::
 
@@ -228,9 +261,25 @@ Enter: T12r
 ``t12r`` Profile
 ~~~~~~~~~~~~~~~~
 
+::
+
+    allocated memory by file
+    -----------------------------------
+    [...]
+    6486233  RUBY/openssl/buffering.rb
+    6086560  GEMS/i18n-0.7.0/lib/i18n/backend/base.rb
+    5742584  GEMS/activesupport-4.2.5/lib/active_support/dependencies.rb
+    [... 11 other files ...]
+    2692249  T12R/lib/t12r/i18n_monkeypatch.rb
+    [...]
+
+    From the baseline profile earlier:
+    5291777  GEMS/i18n-0.7.0/lib/i18n/backend/transliterator.rb
+
 .. note::
 
-    Turns out when I monkeypatch the ``i18n`` gem, the memory it allocates is cut in half.
+    Turns out when I monkeypatch the ``i18n`` gem, the memory it allocates is cut very nearly
+    in half.
 
 ----
 
