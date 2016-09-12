@@ -1,0 +1,76 @@
+@charset "UTF-8";
+@import url("https://cdn.jsdelivr.net/normalize/3.0.3/normalize.min.css");
+@import url("https://cdn.jsdelivr.net/typeplate/1.1.2/typeplate.min.css");
+@import url("https://code.cdn.mozilla.net/fonts/fira.css");
+
+body {
+    font-family: "Fira Sans";
+}
+
+code, pre {
+    font-family: "Fira Mono";
+}
+
+h1, h2, h3 {
+    text-align: center;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}
+
+img.inline {
+    display: inline;
+}
+
+p + p {
+    text-indent: 0;
+}
+
+table {
+    font-size: 30px;
+    margin: 0 auto;
+}
+
+td, th {
+    padding: 5px;
+    vertical-align: middle;
+}
+
+td p, th p {
+    margin: 0;
+}
+
+td + td {
+    text-align: right;
+}
+
+td + td, th + th {
+    padding-left: 25px;
+}
+
+div#interlude blockquote,
+div#interlude .cite,
+div#what-is-thermite blockquote {
+    font-size: 200%;
+    font-style: italic;
+}
+
+div#interlude blockquote:before,
+div#what-is-thermite blockquote:before {
+    content: "\201C";
+    font-size: 700%;
+    left: 0;
+    opacity: 0.1;
+    position: absolute;
+    top: 0;
+}
+
+ul {
+    font-size: 25px;
+}
+
+.step {
+    width: 1000px;
+}
