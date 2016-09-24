@@ -34,7 +34,7 @@ September 12, 2016
 Who am I?
 ---------
 
-.. |data-axle| image:: https://data-axle.com/assets/axle_web/logo-e3204544b43fb1a82dc44c17998d29f29a205570754cec9cb698589ad519f04f.png
+.. |data-axle| image:: images/data-axle.png
    :alt: Data Axle
    :height: 30px
    :class: inline
@@ -158,6 +158,13 @@ Benchmark Run 1    Run 2    Run 3    Run 4    Run 5
 .. note::
 
     I gave a talk at work about this, and my notes say that I wanted to see if I could rewrite it in this project called "turboruby", which by the next RailsConf would turn out to be "Helix". I would end up replacing the glue code with ruru, which has better docs and is overall better maintained. These are the current benchmarks.
+
+----
+
+:id: escape_hstore-code
+
+[Code]
+------
 
 ----
 
@@ -421,6 +428,13 @@ Enter: T12r
     ruru glue code, was support for "custom translations", which was pretty trivial - convert a Ruby
     hash into a Rust hash. All in all, it did not end up being that much code, less than 100
     lines total.
+
+----
+
+:id: t12r-code
+
+[Code]
+------
 
 ----
 
