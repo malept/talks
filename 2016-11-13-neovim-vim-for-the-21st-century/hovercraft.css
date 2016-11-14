@@ -1,0 +1,63 @@
+@charset "UTF-8";
+@import url("https://cdn.jsdelivr.net/normalize/3.0.3/normalize.min.css");
+@import url("https://cdn.jsdelivr.net/typeplate/1.1.2/typeplate.min.css");
+@import url("https://code.cdn.mozilla.net/fonts/fira.css");
+
+body {
+    font-family: "Fira Sans";
+}
+
+code, pre {
+    font-family: "Fira Mono";
+}
+
+h1, h2, h3 {
+    text-align: center;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}
+
+img.inline {
+    display: inline;
+}
+
+p + p {
+    text-indent: 0;
+}
+
+table {
+    font-size: 30px;
+    margin: 0 auto;
+}
+
+td, th {
+    padding: 5px;
+    vertical-align: middle;
+}
+
+td p, th p {
+    margin: 0;
+}
+
+td + td {
+    text-align: right;
+}
+
+td + td, th + th {
+    padding-left: 25px;
+}
+
+.asciicast {
+    text-align: center;
+}
+
+ul {
+    font-size: 25px;
+}
+
+.step {
+    width: 1000px;
+}
