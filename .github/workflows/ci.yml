@@ -1,10 +1,10 @@
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -37,3 +37,14 @@ jobs:
         for dir in $(ls -d 20*); do
           poetry run hovercraft "$dir"/index.rst out/"$dir"
         done
+    - name: Publish to GitHub Pages
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: malept/github-action-gh-pages@main
+      with:
+        defaultBranch: main
+        docsPath: out
+        gitCommitUser: Docs Publisher Bot
+        gitCommitEmail: actions@users.noreply.github.com
+        showUnderscoreFiles: true
+      env:
+        DOCS_SSH_DEPLOY_KEY: ${{ secrets.DOCS_SSH_DEPLOY_KEY }}
