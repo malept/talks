@@ -1,0 +1,50 @@
+@import url("https://cdn.jsdelivr.net/normalize/3.0.3/normalize.min.css");
+@import url("https://cdn.jsdelivr.net/typeplate/1.1.2/typeplate.min.css");
+@import url("https://code.cdn.mozilla.net/fonts/fira.css");
+
+body {
+    font-family: "Fira Sans";
+}
+
+code, pre {
+    font-family: "Fira Mono";
+}
+
+h1, h2, h3 {
+    text-align: center;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}
+
+p + p {
+    text-indent: 0;
+}
+
+table {
+    font-size: 30px;
+    margin: 0 auto;
+}
+
+td, th {
+    padding: 30px;
+    vertical-align: middle;
+}
+
+td p, th p {
+    margin: 0;
+}
+
+th:first-child {
+    color: transparent;
+}
+
+td + td {
+    text-align: center;
+}
+
+ul {
+    font-size: 25px;
+}

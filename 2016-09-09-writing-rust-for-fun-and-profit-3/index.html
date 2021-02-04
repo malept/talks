@@ -1,0 +1,72 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title></title><meta charset="UTF-8"></meta><meta name="generator" content="Hovercraft! 1.0 http://regebro.github.com/hovercraft"></meta><link rel="stylesheet" href="css/hovercraft.css" media="all"></link><link rel="stylesheet" href="css/highlight.css" media="all"></link><link rel="stylesheet" href="hovercraft.css" media="screen,projection"></link><script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        showProcessingMessages: false,
+        messageStyle: "none",
+        TeX : { extensions : ['color.js'] }
+      });
+    </script></head><body class="impress-not-supported"><div id="impress"><div class="step step-level-1" step="0" id="title-card" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="0" data-y="0" data-z="0"><h1 id="writing-rust-for-fun-profit">Writing Rust for Fun (&amp; Profit?)</h1><h2 id="episode-iii-revenge-of-the-ascii">Episode III: Revenge of the ASCII</h2><a href="http://www.rustacean.net/"><img src="images/rustacean-orig-trans.png" alt="[Rustacean]" width="50%" class="rustacean"></img></a><p>Presenter: Mark Lee - Pythonista, Rustacean, and Professional Rubyist</p><p>September 9, 2016</p><div class="notes"><p>Welcome to part three in my continuing series on Rust. This time I'm going to talk about a gem I
+wrote to help people write Rust extensions for Ruby faster, and a real-life case study I did
+with Rust on one of our apps.</p></div></div><div class="step step-level-1" step="1" id="thermite" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="1600" data-y="0" data-z="0"><h1 id="thermite">Thermite</h1><p><blockquote class="imgur-embed-pub" lang="en" data-id="NzXAzNK">Example of Thermite</blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script></p><p>(<a href="https://redd.it/3aiu78">Reddit source</a>, <a href="https://youtu.be/tj7S_DNFgEU?t=3m52s">YouTube source</a>)</p><div class="notes"><p>I named the gem "thermite". One of the reasons may have been an excuse to watch a bunch of
+chemical reaction videos.</p></div></div><div class="step step-level-1" step="2" id="why-thermite" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="3200" data-y="0" data-z="0"><h1 id="why-name-it-thermite">Why name it Thermite?</h1><ul><li>Ruby includes aluminum oxide (Al&#x2082;O&#x2083;)</li><li>Rust: iron oxide (Fe&#x2082;O&#x2083;)</li><li>A common thermite formula: Fe&#x2082;O&#x2083; + 2Al &#x2192; 2Fe + Al&#x2082;O&#x2083;</li></ul><div class="notes"><p>But really, why name it Thermite? Unsurprisingly, a cheap shot at humor. According to Wikipedia,
+Ruby (the gemstone) contains aluminum oxide. Rust (the orange stuff) is iron oxide. A common
+thermite reaction uses iron oxide and aluminum to produce iron and aluminum oxide. Also, somehow
+the gem name "thermite" wasn't taken.</p></div></div><div class="step step-level-1" step="3" id="what-is-thermite" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="4800" data-y="0" data-z="0"><h1 id="ha-ha-what-does-it-do">Ha, ha. What does it do?</h1><img src="images/ruby-logo.png" alt="Ruby"></img><img src="images/rust-logo-512x512.png" alt="Rust" width="256" height="256"></img><blockquote><p><a href="https://github.com/malept/thermite">Thermite</a> is a Rake-based helper for building and
+distributing Rust-based Ruby extensions.</p></blockquote><div class="notes"><p>Now that I've thoroughly explained the joke, I might as well describe what it does. The easiest
+way to do that is to quote the README.</p></div></div><div class="step step-level-1" step="4" id="thermite-features" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="6400" data-y="0" data-z="0"><h1 id="thermite-features">Thermite: Features</h1><ul><li>Make it easy to configure and run <tt>cargo</tt></li><li>Install the compiled extension in a location easily accessible by Ruby</li><li>Allow users to install precompiled binaries from GitHub releases or an arbitrary URL (coming soon)</li></ul><div class="notes"><p>Although it's primarily a wrapper around <tt>cargo</tt>, the other big feature is that it allows the
+library developer to specify a location where users will automatically download and install
+precompiled versions of the extension, if <tt>cargo</tt> is not on their system. This is particularly
+useful when you don't want to impose a new language dependency on all of the developers, or the
+production infrastructure.</p></div></div><div class="step step-level-1" step="5" id="six-easy-steps" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="8000" data-y="0" data-z="0"><h1 id="use-thermite-in-six-easy-steps">Use Thermite in Six Easy Steps!</h1><ol><li>Add <tt>thermite</tt> to your <tt>Gemfile</tt>, run <tt>bundle</tt></li><li>Add to your gemspec:<pre class="highlight code ruby"><span class="n">s</span><span class="o">.</span><span class="n">extensions</span> <span class="o">&lt;&lt;</span> <span class="s1">'ext/Rakefile'</span>
+<span class="n">s</span><span class="o">.</span><span class="n">add_runtime_dependency</span> <span class="s1">'thermite'</span><span class="p">,</span> <span class="s1">'~&gt; 0'</span></pre></li><li>Create <tt>ext/Rakefile</tt>:<pre class="highlight code ruby"><span class="nb">require</span> <span class="s1">'thermite/tasks'</span>
+<span class="no">Thermite</span><span class="o">::</span><span class="no">Tasks</span><span class="o">.</span><span class="n">new</span></pre></li><li>Load your extension via FFI + Thermite</li><li>?</li><li><del>Profit!</del> Performance!</li></ol><div class="notes"><p>I've tried to make it relatively simple to use. Add a gem, create a few files, some magic
+happens, and you're ready to write some fast code! I modeled how Thermite is invoked in the
+Rakefile from other gems which have Rake tasks, like Bundler and Rubocop. The gem itself has
+unit tests, API docs, and hopefully a fairly comprehensive README.</p></div></div><div class="step step-level-1" step="6" id="case-study" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="9600" data-y="0" data-z="0"><h1 id="case-study-transliteration">Case Study: Transliteration</h1><div class="notes"><p>Switching gears slightly, I'm going to talk about a gem that I wrote this week to showcase how
+simple writing a Rust extension can be, even more so now that Thermite has been written.</p></div></div><div class="step step-level-1" step="7" id="defining-transliteration" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="11200" data-y="0" data-z="0"><h1 id="utf-8-ascii">UTF-8 &#x2192; ASCII</h1><ul><li><tt>&#xE9;</tt> &#x2192; <tt>e</tt></li><li><tt>&#x2014;</tt> &#x2192; <tt>-</tt></li><li><tt>&#xAE;</tt> &#x2192; <tt>(R)</tt></li></ul><div class="notes"><p>I should define what I mean by transliteration. In this case, it's the process taking characters
+outside of the ASCII character set and converting them into their ASCII "equivalent". For
+example, European characters with accents lose the accents, and traditional Chinese characters
+get converted to their pinyin equivalents. In our case, it's usually accented characters and
+punctuation that needs to get converted.</p></div></div><div class="step step-level-1" step="8" id="i18n-gem" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="12800" data-y="0" data-z="0"><h1 id="i18n"><tt>i18n</tt></h1><ul><li>Dependency of ActiveSupport</li><li>Pure Ruby</li></ul><pre class="highlight code ruby"><span class="no">I18n</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">store_translations</span><span class="p">(</span><span class="ss">:en</span><span class="p">,</span> <span class="ss">i18n</span><span class="p">:</span> <span class="p">{</span>
+  <span class="ss">transliterate</span><span class="p">:</span> <span class="p">{</span> <span class="ss">rule</span><span class="p">:</span> <span class="n">custom_translations</span> <span class="p">}</span>
+<span class="p">})</span>
+<span class="no">I18n</span><span class="o">.</span><span class="n">transliterate</span><span class="p">(</span><span class="n">input_string</span><span class="p">)</span></pre><div class="notes"><p>How does Rails help us with that? In ActiveSupport, the <tt>i18n</tt> gem is included and
+preconfigured so that we can transliterate strings with accented characters with a simple method
+call. If you want custom transliterations, it's slightly more work.</p></div></div><div class="step step-level-1" step="9" id="i18n-profile" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="14400" data-y="0" data-z="0"><h1 id="i18n-profile"><tt>i18n</tt> Profile</h1><pre class="highlight ">allocated memory by file
+-----------------------------------
+[...]
+6266676  RUBY/openssl/buffering.rb
+6086560  GEMS/i18n-0.7.0/lib/i18n/backend/base.rb
+5742584  GEMS/activesupport-4.2.5/lib/active_support/dependencies.rb
+5291777  GEMS/i18n-0.7.0/lib/i18n/backend/transliterator.rb
+[...]</pre><div class="notes"><p>I've been helping a coworker with some optimizations lately. The low-hanging fruit was replacing
+<tt>gsub!</tt> calls with <tt>tr!</tt> calls when possible, which saved a bunch of memory allocations and
+presumably some CPU time. When I was looking at the memory profiler output, I noticed that the
+<tt>i18n</tt> gem allocated and retained more memory than I was expecting, so I dug into it. It turns
+out that the version of <tt>transliterate</tt> that we use runs <tt>gsub</tt> (no exclamation point) and
+goes character-by-character to see which ones need to be replaced. This allocates one object per
+character, which can get bad when you're running this on lots of large records.</p></div></div><div class="step step-level-1" step="10" id="t12r" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="16000" data-y="0" data-z="0"><h1 id="enter-t12r">Enter: T12r</h1><ul><li>Transliterator &#x2192; T12r</li><li>Rust: 45 LoC (not including tests)</li><li>Ruby: 27 LoC (not including tests)</li></ul><pre class="highlight code ruby"><span class="no">T12r</span><span class="o">.</span><span class="n">transliterate</span><span class="p">(</span><span class="n">input_string</span><span class="p">,</span> <span class="n">custom_translations</span><span class="p">)</span></pre><div class="notes"><p>Since the bottleneck wasn't in our code, I decided to try an experiment: rewrite transliterate
+in Rust, monkeypatch the <tt>i18n</tt> gem, and see what kind of speedup I get. Luckily for me,
+someone wrote a Rust crate to transliterate Unicode, so I didn't have to reinvent the wheel. The
+only thing I had to write apart from the minimal glue code was support for "custom
+translations", which was pretty trivial - convert a Ruby hash into a Rust hash. All in all, it
+did not end up being that much code, less than 100 lines total.</p></div></div><div class="step step-level-1" step="11" id="t12r-profile" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="17600" data-y="0" data-z="0"><h1 id="t12r-profile"><tt>t12r</tt> Profile</h1><pre class="highlight ">allocated memory by file
+-----------------------------------
+[...]
+6486233  RUBY/openssl/buffering.rb
+6086560  GEMS/i18n-0.7.0/lib/i18n/backend/base.rb
+5742584  GEMS/activesupport-4.2.5/lib/active_support/dependencies.rb
+[... 11 other files ...]
+2692249  T12R/lib/t12r/i18n_monkeypatch.rb
+[...]
+
+From the baseline profile earlier:
+5291777  GEMS/i18n-0.7.0/lib/i18n/backend/transliterator.rb</pre><div class="notes"><p>Turns out when I monkeypatch the <tt>i18n</tt> gem, the memory it allocates is cut very nearly
+in half.</p></div></div><div class="step step-level-1" step="12" id="t12r-benchmarks" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="19200" data-y="0" data-z="0"><h1 id="benchmarks">Benchmarks</h1><p>AWS EC2 t2.medium,
+Ubuntu Linux 16.04 (amd64),
+Ruby 2.3.1,
+Rust 1.11.0</p><table cellpadding="0" cellspacing="0"><thead><tr><th><p>Benchmark</p></th><th><p>Run 1</p></th><th><p>Run 2</p></th><th><p>Run 3</p></th><th><p>Run 4</p></th><th><p>Run 5</p></th></tr></thead><tbody><tr><td><p>activesupport_unrealistic</p></td><td><p>9.229482</p></td><td><p>9.244237</p></td><td><p>9.207310</p></td><td><p>9.214158</p></td><td><p>9.303218</p></td></tr><tr><td><p>t12r_unrealistic</p></td><td><p>0.737353</p></td><td><p>0.736112</p></td><td><p>0.734379</p></td><td><p>0.737035</p></td><td><p>0.734893</p></td></tr><tr><td><p>activesupport_realistic</p></td><td><p>0.640747</p></td><td><p>0.632533</p></td><td><p>0.634910</p></td><td><p>0.636180</p></td><td><p>0.638756</p></td></tr><tr><td><p>t12r_realistic</p></td><td><p>0.315267</p></td><td><p>0.317564</p></td><td><p>0.315769</p></td><td><p>0.319236</p></td><td><p>0.316022</p></td></tr></tbody></table><ul><li>Unrealistic benchmark (~13x speedup&#x203D;): 220 characters, 70% non-ASCII</li><li>Realistic benchmark (~2x speedup):<blockquote><p>Introducing: Slurm&#xAE; Latt&#xE9;&#x2014;Even more highly addictive!</p></blockquote></li></ul><div class="notes"><p>Unfortunately running the memory profile script makes it more difficult to figure out if there
+are any speedups, so I wrote a quick benchmark script. It actually does two benchmarks - one
+with mostly special characters, and one with mostly normal characters. The special character
+benchmark was surprising, it was consistently around a 13x speedup. On the other hand, the
+benchmark with the more realistic text was closer to a 2x speedup. Not bad for less than 100
+lines of code.</p></div></div><div class="step step-level-1" step="13" id="questions" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="20800" data-y="0" data-z="0"><h1 id="questions">Questions?</h1><img src="images/rust-logo-512x512.png" alt="[Rust Logo]"></img></div></div><script type="text/javascript" src="js/impress.js"></script><script type="text/javascript" src="js/gotoSlide.js"></script><script type="text/javascript" src="js/hovercraft.js"></script></body></html>
