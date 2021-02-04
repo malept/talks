@@ -47,4 +47,4 @@ jobs:
         gitCommitEmail: actions@users.noreply.github.com
         showUnderscoreFiles: true
       env:
-        DOCS_SSH_DEPLOY_KEY: ${{ secrets.DOCS_SSH_DEPLOY_KEY }}
+        GH_PAGES_SSH_DEPLOY_KEY: ${{ secrets.DOCS_SSH_DEPLOY_KEY }}
