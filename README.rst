@@ -9,14 +9,14 @@ Installation
 
 This repository uses `Poetry`_ to manage dependencies.
 
-.. code-block: shell
+.. code:: shell
 
    poetry install
 
 Build
 -----
 
-.. code-block: shell
+.. code:: shell
 
    poetry run hovercraft $TALK_DIR/index.rst $OUTPUT_DIR
 
