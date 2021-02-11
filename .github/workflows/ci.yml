@@ -41,7 +41,7 @@ jobs:
         done
     - name: Publish to GitHub Pages
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: malept/github-action-gh-pages@main
+      uses: malept/github-action-gh-pages@fix/rsync-instead-of-mv
       with:
         defaultBranch: main
         docsPath: out
