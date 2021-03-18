@@ -108,7 +108,7 @@ OAuth 2.0: Terminology
 ----------------------
 
 Scope
-   Comma separated list of information the client wants to access
+   Space-separated list of information the client wants to access
 
 Grant
    A way of getting authorization from a resource owner
