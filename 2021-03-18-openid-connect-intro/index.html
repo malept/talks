@@ -1,0 +1,105 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>An Introduction to OpenID Connect</title><meta charset="UTF-8"></meta><meta name="generator" content="Hovercraft! 1.0 http://regebro.github.com/hovercraft"></meta><link rel="stylesheet" href="css/hovercraft.css" media="all"></link><link rel="stylesheet" href="css/highlight.css" media="all"></link><link rel="stylesheet" href="hovercraft.css" media="screen,projection"></link><script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        showProcessingMessages: false,
+        messageStyle: "none",
+        TeX : { extensions : ['color.js'] }
+      });
+    </script></head><body class="impress-not-supported"><div id="impress"><div class="step step-level-1" step="0" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="0" data-y="0" data-z="0"><h1 id="an-introduction-to-openid-connect">An Introduction to OpenID Connect</h1><a href="https://openid.net/connect/"><img src="images/openid-logo.svg" alt="OpenID" width="50%"></img></a><p>Presenter: Mark Lee</p></div><div class="step step-level-1" step="1" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="1600" data-y="0" data-z="0"><h1 id="what-is-openid">What is OpenID?</h1><p>A set of open standards for decentralized authentication.</p><div class="notes"><p>For context, prior to OpenID Connect, there were two earlier versions of OpenID that defined its
+own signature verified, URL-based callback workflow to transfer the user information to the
+website requesting authentication information. Meanwhile, OpenID Connect builds on top of
+OAuth 2.0.</p></div></div><div class="step step-level-1" step="2" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="3200" data-y="0" data-z="0"><h1 id="terminology">Terminology</h1><ul><li>Identity provider (IdP)</li><li>Relying Party (RP)</li><li>Claim</li><li>ID Token</li></ul><div class="notes"><p>To get some of the common terminology out of the way, the identity provider is the "source of
+truth" for the given user's identity. The relying party is the website that wants to know that
+user's identity. A claim is "a piece of information about" a user. The ID token, unsurprisingly,
+is a JWT respresenting the authenticated user.</p></div></div><div class="step step-level-1" step="3" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="4800" data-y="0" data-z="0"><h1 id="diagram">Diagram</h1><img src="images/OpenIDConnect-Map-4Feb2014.png" alt="[Protocol Suite &amp; Underpinnings Diagram]"></img><div class="notes"><p>In terms of the protocol suite shown in the diagram, we're primarily going to talk about the core
+spec, and to a lesser extent, the discovery spec.</p></div></div><div class="step step-level-1" step="4" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="6400" data-y="0" data-z="0"><h1 id="sidebar-a-quick-intro-to-oauth-2-0">Sidebar: A Quick Intro to OAuth 2.0</h1><img src="images/Oauth_logo.svg" alt="[OAuth logo]"></img><div class="notes"><p>First, let's dive into the OAuth 2 protocol to see how some of the underlying protocol works.</p></div></div><div class="step step-level-1" step="5" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="8000" data-y="0" data-z="0"><h1 id="oauth-2-0-protocol-flow">OAuth 2.0: Protocol Flow</h1><pre class="highlight code">+--------+                               +---------------+
+|        |--(1)- Authorization Request -&gt;|   Resource    |
+|        |                               |     Owner     |
+|        |&lt;-(2)-- Authorization Grant ---|               |
+|        |                               +---------------+
+|        |
+|        |                               +---------------+
+|        |--(3)-- Authorization Grant --&gt;| Authorization |
+| Client |                               |     Server    |
+|        |&lt;-(4)----- Access Token -------|               |
+|        |                               +---------------+
+|        |
+|        |                               +---------------+
+|        |--(5)----- Access Token ------&gt;|    Resource   |
+|        |                               |     Server    |
+|        |&lt;-(6)--- Protected Resource ---|               |
++--------+                               +---------------+</pre><div class="notes"><p>This is actually taken from the <a href="https://tools.ietf.org/html/draft-parecki-oauth-v2-1-03#section-1.2">draft RFC for OAuth 2.1</a>, which is OAuth 2.0 but incorporates
+all of the errata since it was published. The resource owner is the user.In many cases, the
+authorization server and resource server are the same thing.</p></div></div><div class="step step-level-1" step="6" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="9600" data-y="0" data-z="0"><h1 id="oauth-2-0-terminology">OAuth 2.0: Terminology</h1><dl><dt>Scope</dt><dd><p>Space-separated list of information the client wants to access</p></dd><dt>Grant</dt><dd><p>A way of getting authorization from a resource owner</p></dd><dt>Client ID</dt><dd><p>Opaque token known by server &amp; client, passed to identify the client</p></dd><dt>Client Secret</dt><dd><p>Opaque token known by server &amp; client, not passed to the server via a web browser</p></dd></dl></div><div class="step step-level-1" step="7" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="11200" data-y="0" data-z="0"><h1 id="oauth-2-0-grant-types">OAuth 2.0: Grant Types</h1><ul><li>Authorization Code</li><li>PKCE</li><li>Client Credentials</li><li>Device Code</li><li>Refresh Token</li></ul><p>Deprecated:</p><ul><li>Implicit Flow</li><li>Password</li></ul><div class="notes"><p>There are a number of grant types defined by the OAuth 2.0 spec. I'm going to talk about the
+non-deprecated ones.</p></div></div><div class="step step-level-1" step="8" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="12800" data-y="0" data-z="0"><h1 id="authorization-code">Authorization Code</h1><pre class="highlight code">GET /authorize?
+{
+  response_type: code
+  client_id: CLIENT_ID
+  redirect_uri: URI
+  scope: name email
+  state: abcd1234
+}</pre><div class="notes"><p>The authorization code grant type is the typical way a website uses OAuth. For readability's
+sake, I've converted this URL query string and subsequent ones into JSON. Note that the <tt>scope</tt>
+parameter is space-delimited.</p></div></div><div class="step step-level-1" step="9" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="14400" data-y="0" data-z="0"><h1 id="authorization-code-prompt">Authorization Code: Prompt</h1><a href="https://aaronparecki.com/oauth-2-simplified/oauth-authorization-prompt.png"><img src="images/oauth-authorization-prompt.png" alt="[Mockup of a user's authorization prompt]"></img></a><div class="notes"><p>After a resource owner logs in, on the authorize page, they are usually presented with a
+confirmation page similar to the mockup shown here. If the app is considered "trusted", this
+page could be skipped.</p></div></div><div class="step step-level-1" step="10" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="16000" data-y="0" data-z="0"><h1 id="authorization-code-redirect">Authorization Code: Redirect</h1><pre class="highlight code">302 Found
+Location: URI?
+{
+  code: AUTHORIZATION_CODE
+  state: abcd1234
+}</pre><div class="notes"><p>The user is then redirected back to the OAuth client.</p></div></div><div class="step step-level-1" step="11" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="17600" data-y="0" data-z="0"><h1 id="authorization-code-access-token">Authorization Code: Access Token</h1><pre class="highlight code">POST /token
+{
+  grant_type: authorization_code
+  code: AUTHORIZATION_CODE
+  redirect_uri: URI
+  client_id: CLIENT_ID
+  client_secret: CLIENT_SECRET
+}
+
+----
+
+200 OK
+
+{
+  access_token: 123token
+  expires_in: 3600
+  token_type: bearer
+  refresh_token: refresh1 # optional
+  scope: name email # optional if the user didn't change the allowed scopes
+}</pre><div class="notes"><p>The client can now use the authorization code to retrieve an access token. If the server
+supports it, it can also specify a refresh token which we'll cover later.</p></div></div><div class="step step-level-1" step="12" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="19200" data-y="0" data-z="0"><h1 id="proof-key-for-code-exchange-pkce">Proof Key for Code Exchange (PKCE)</h1><p>(<em>pronounced pixie</em>)</p><pre class="highlight code">GET /authorize?
+{
+  ...
+  code_challenge: 1234abcd
+  code_challenge_method: S256
+}</pre><div class="notes"><p>This is an extension to authorization code in that it effectively adds CSRF support to the
+authorization code method. The original use case for this was for mobile apps, but has since
+been recommended for server-side apps as well.</p></div></div><div class="step step-level-1" step="13" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="20800" data-y="0" data-z="0"><h1 id="client-credentials">Client Credentials</h1><pre class="highlight code">POST /token
+{
+  grant_type: client_credentials
+  client_id: CLIENT_ID
+  client_secret: CLIENT_SECRET
+}</pre><div class="notes"><p>The Client Credentials grant is used when applications request an access token to access their
+own resources, not on behalf of a resource owner.</p></div></div><div class="step step-level-1" step="14" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="22400" data-y="0" data-z="0"><h1 id="device-code">Device Code</h1><a href="https://techwiser.com/wp-content/uploads/2020/12/sign-in-phone-hbo-max.jpg"><img src="images/sign-in-phone-hbo-max.jpg" alt="[HBO MAX example of a device code UI]"></img></a><div class="notes"><p>This is basically the flow that happens when you pair a streaming service like YouTube or
+HBO MAX to your smart TV.</p></div></div><div class="step step-level-1" step="15" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="24000" data-y="0" data-z="0"><h1 id="refresh-code">Refresh Code</h1><pre class="highlight code">POST /token
+{
+  grant_type: refresh_token
+  refresh_token: refresh1
+}</pre><div class="notes"><p>Finally, the refresh code grant type allows for clients to request new access tokens before they expire.</p></div></div><div class="step step-level-1" step="16" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="25600" data-y="0" data-z="0"><h1 id="how-openid-connect-uses-oauth-2-0">How OpenID Connect uses OAuth 2.0</h1><ul><li>Required scope: <tt>openid</tt></li><li><dl><dt>Optional pre-defined scopes (which map to claims):</dt><dd><ul><li><tt>profile</tt></li><li><tt>email</tt></li><li><tt>address</tt></li><li><tt>phone</tt></li></ul></dd></dl></li><li><tt>id_token</tt> is given alongside the <tt>access_token</tt> when accessing the token endpoint</li><li>The user info endpoint provides the claim data defined by the above scopes</li></ul></div><div class="step step-level-1" step="17" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="27200" data-y="0" data-z="0"><h1 id="openid-connect-discovery">OpenID Connect: Discovery</h1><pre class="highlight code http"><span class="nf">GET</span> <span class="nn">/.well-known/openid-configuration</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span></pre><pre class="highlight code http"><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+  <span class="nt">"issuer"</span><span class="p">:</span> <span class="s2">"https://id.example.com"</span><span class="p">,</span>
+  <span class="nt">"authorization_endpoint"</span><span class="p">:</span> <span class="s2">"https://id.example.com/openid/authorize"</span><span class="p">,</span>
+  <span class="nt">"token_endpoint"</span><span class="p">:</span> <span class="s2">"https://id.example.com/openid/token"</span><span class="p">,</span>
+  <span class="nt">"token_endpoint_auth_methods_supported"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"client_secret_basic"</span><span class="p">,</span> <span class="s2">"private_key_jwt"</span><span class="p">],</span>
+  <span class="nt">"token_endpoint_auth_signing_alg_values_supported"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"RS256"</span><span class="p">,</span> <span class="s2">"ES256"</span><span class="p">],</span>
+  <span class="nt">"userinfo_endpoint"</span><span class="p">:</span> <span class="s2">"https://id.example.com/openid/userinfo"</span><span class="p">,</span>
+  <span class="nt">"jwks_uri"</span><span class="p">:</span> <span class="s2">"https://id.example.com/openid/jwks"</span><span class="p">,</span>
+  <span class="nt">"response_types_supported"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"code"</span><span class="p">],</span>
+  <span class="nt">"grant_types_supported"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"authorization_code"</span><span class="p">],</span> <span class="nt">"//"</span><span class="p">:</span> <span class="s2">"optional"</span><span class="p">,</span>
+  <span class="nt">"subject_types_supported"</span><span class="p">:</span>  <span class="p">[</span><span class="s2">"public"</span><span class="p">,</span> <span class="s2">"pairwise"</span><span class="p">],</span>
+  <span class="nt">"id_token_signing_alg_values_supported"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"RS256"</span><span class="p">]</span>
+<span class="p">}</span></pre><div class="notes"><p>As mentioned earlier, the <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">discovery spec</a> is a separate spec from the <a href="https://openid.net/specs/openid-connect-core-1_0.html">core spec</a>. It
+describes a well-known URI endpoint that returns various metadata about the OpenID Connect
+implementation.</p></div></div><div class="step step-level-1" step="18" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="28800" data-y="0" data-z="0"><h1 id="questions">Questions&#x2753;</h1><a href="https://openid.net/connect/"><img src="images/openid-logo.svg" alt="OpenID" width="50%"></img></a></div></div><script type="text/javascript" src="js/impress.js"></script><script type="text/javascript" src="js/gotoSlide.js"></script><script type="text/javascript" src="js/hovercraft.js"></script></body></html>
