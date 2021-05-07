@@ -1,5 +1,6 @@
 :skip-help: true
 :css: hovercraft.css
+:js-body: plugins/print-notes.js
 
 .. title:: An Introduction to OpenID Connect
 

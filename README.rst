@@ -43,6 +43,12 @@ In another terminal, run:
 
    yarn decktape impress http://localhost:8888/ path/to/generated.pdf
 
+If you wish to include presenter notes in the PDF and the presentation supports it, instead run:
+
+.. code:: shell
+
+   yarn decktape impress http://localhost:8888/?show-notes=1 path/to/generated.pdf
+
 License
 -------
 
