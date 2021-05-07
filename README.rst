@@ -7,11 +7,17 @@ NDA-level information).
 Installation
 ------------
 
-This repository uses `Poetry`_ to manage dependencies.
+This repository uses `Poetry`_ to manage basic dependencies.
 
 .. code:: shell
 
    poetry install
+
+For PDF creation, this repository uses Node.js/yarn.
+
+.. code:: shell
+
+   yarn
 
 Build
 -----
@@ -21,6 +27,21 @@ Build
    poetry run hovercraft $TALK_DIR/index.rst $OUTPUT_DIR
 
 See ``poetry run hovercraft --help`` for details.
+
+PDF
+---
+
+To generate a PDF, in one terminal, run:
+
+.. code:: shell
+
+   poetry run hovercraft --port 8888 $TALK_DIR/index.rst
+
+In another terminal, run:
+
+.. code:: shell
+
+   yarn decktape impress http://localhost:8888/ path/to/generated.pdf
 
 License
 -------

@@ -1,0 +1,22 @@
+{
+  "name": "talks",
+  "version": "1.0.0",
+  "description": "For Node.js based tools used in this repository",
+  "private": true,
+  "devDependencies": {
+    "decktape": "^3.1.0"
+  },
+  "bin": {
+    "slides2pdf": "slides2pdf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malept/talks.git"
+  },
+  "keywords": [],
+  "author": "Mark Lee",
+  "bugs": {
+    "url": "https://github.com/malept/talks/issues"
+  },
+  "homepage": "https://github.com/malept/talks#readme"
+}
