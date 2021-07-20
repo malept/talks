@@ -50,3 +50,11 @@ jobs:
         showUnderscoreFiles: true
       env:
         GH_PAGES_SSH_DEPLOY_KEY: ${{ secrets.DOCS_SSH_DEPLOY_KEY }}
+
+  automerge:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v2.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
