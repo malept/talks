@@ -6,6 +6,9 @@
   "devDependencies": {
     "decktape": "^3.4.0"
   },
+  "resolutions": {
+    "xmldom": "https://github.com/xmldom/xmldom/archive/refs/tags/v0.7.0.tar.gz"
+  },
   "bin": {
     "slides2pdf": "slides2pdf.js"
   },

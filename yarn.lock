@@ -483,10 +483,9 @@ ws@7.4.6:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.6.tgz#5654ca8ecdeee47c33a9a4bf6d28e2be2980377c"
   integrity sha512-YmhHDO4MzaDLB+M9ym/mDA5z0naX8j7SIlT8f8z+I0VtzsRbekxEutHSme7NPS2qE8StCYQNUnfWdXta/Yu85A==
 
-xmldom@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/xmldom/-/xmldom-0.5.0.tgz#193cb96b84aa3486127ea6272c4596354cb4962e"
-  integrity sha512-Foaj5FXVzgn7xFzsKeNIde9g6aFBxTPi37iwsno8QvApmtg7KYrr+OPyRHcJF7dud2a5nGRBXK3n0dL62Gf7PA==
+xmldom@^0.5.0, "xmldom@https://github.com/xmldom/xmldom/archive/refs/tags/v0.7.0.tar.gz":
+  version "0.7.0"
+  resolved "https://github.com/xmldom/xmldom/archive/refs/tags/v0.7.0.tar.gz#b084f263bd7d8c6260217bf2008b82276ada484b"
 
 yauzl@^2.10.0:
   version "2.10.0"
