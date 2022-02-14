@@ -7,6 +7,7 @@
     "decktape": "^3.4.0"
   },
   "resolutions": {
+    "**/node-fetch": "2.6.7",
     "xmldom": "https://github.com/xmldom/xmldom/archive/refs/tags/v0.7.0.tar.gz"
   },
   "bin": {
