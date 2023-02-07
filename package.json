@@ -4,7 +4,7 @@
   "description": "For Node.js based tools used in this repository",
   "private": true,
   "devDependencies": {
-    "decktape": "^3.4.1"
+    "decktape": "^3.6.0"
   },
   "resolutions": {
     "**/node-fetch": "2.6.7",
