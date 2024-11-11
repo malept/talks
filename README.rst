@@ -7,7 +7,7 @@ NDA-level information).
 Installation
 ------------
 
-This repository uses `Poetry`_ to manage basic dependencies.
+This repository uses `uv`_ to manage basic dependencies.
 
 .. code:: shell
 
@@ -56,7 +56,7 @@ Unless otherwise specified, the example code is copyrighted under the `Apache Li
 content is copyrighted under the `Creative Commons Attribution Share-Alike 4.0 International`_
 license.
 
-.. _Poetry: https://python-poetry.org/
+.. _uv: https://docs.astral.sh/uv/
 .. _Apache License 2.0: https://www.apache.org/licenses/LICENSE-2.0
 .. _Creative Commons Attribution Share-Alike 4.0 International:
    https://creativecommons.org/licenses/by-sa/4.0/
