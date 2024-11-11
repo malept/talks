@@ -7,11 +7,8 @@ NDA-level information).
 Installation
 ------------
 
-This repository uses `Poetry`_ to manage basic dependencies.
-
-.. code:: shell
-
-   poetry install
+This repository uses `uv`_ to manage basic dependencies. ``uv`` does not require an
+installation step.
 
 For PDF creation, this repository uses Node.js/yarn.
 
@@ -24,9 +21,9 @@ Build
 
 .. code:: shell
 
-   poetry run hovercraft $TALK_DIR/index.rst $OUTPUT_DIR
+   uv run hovercraft $TALK_DIR/index.rst $OUTPUT_DIR
 
-See ``poetry run hovercraft --help`` for details.
+See ``uv run hovercraft --help`` for details.
 
 PDF
 ---
@@ -35,7 +32,7 @@ To generate a PDF, in one terminal, run:
 
 .. code:: shell
 
-   poetry run hovercraft --port 8888 $TALK_DIR/index.rst
+   uv run hovercraft --port 8888 $TALK_DIR/index.rst
 
 In another terminal, run:
 
@@ -56,7 +53,7 @@ Unless otherwise specified, the example code is copyrighted under the `Apache Li
 content is copyrighted under the `Creative Commons Attribution Share-Alike 4.0 International`_
 license.
 
-.. _Poetry: https://python-poetry.org/
+.. _uv: https://docs.astral.sh/uv/
 .. _Apache License 2.0: https://www.apache.org/licenses/LICENSE-2.0
 .. _Creative Commons Attribution Share-Alike 4.0 International:
    https://creativecommons.org/licenses/by-sa/4.0/
