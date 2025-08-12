@@ -3,7 +3,7 @@
 
 mkdir -p out
 args=()
-for dir in $(ls -d 20*); do
+for dir in $(mise run talk-directories); do
   if [[ ${#args[@]} -gt 0 ]]; then
     args+=(:::)
   fi

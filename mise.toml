@@ -7,7 +7,7 @@ description = "Generate HTML output for the given slides directory"
 run = 'hovercraft "$usage_talk_dir/index.rst" "$usage_output_dir"'
 usage = '''
 arg "<talk_dir>" help="The directory containing the ReStructuredText source slides"
-complete "talk_dir" run="mise run completion:talks"
+complete "talk_dir" run="mise run talk-directories"
 arg "<output_dir>" help="The directory to generate the HTML output"
 '''
 
@@ -33,10 +33,10 @@ run = 'hovercraft --port "$usage_port" "$usage_talk_dir"/index.rst'
 usage = '''
 flag "--port <port>" default="8888"
 arg "<talk_dir>" help="The directory containing the ReStructuredText source slides"
-complete "talk_dir" run="mise run completion:talks"
+complete "talk_dir" run="mise run talk-directories"
 '''
 
-[tasks."completion:talks"]
+[tasks.talk-directories]
 hide = true
 quiet = true
 run = "ls -d */ | grep -v ^images/$ | sed 's:/$::g'"
