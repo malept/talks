@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE description="Generate HTML output for all known slides directories"
+
+mkdir -p out
+args=()
+for dir in $(ls -d 20*); do
+  if [[ ${#args[@]} -gt 0 ]]; then
+    args+=(:::)
+  fi
+  args+=(build:html "$dir" out/"$dir")
+done
+mise run "${args[@]}"

@@ -1,0 +1,7 @@
+[tools."npm:decktape"]
+version = "^3.15.0"
+backend = "npm:decktape"
+
+[tools."pipx:hovercraft"]
+version = "2.7"
+backend = "pipx:hovercraft"
