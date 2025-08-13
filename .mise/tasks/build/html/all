@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 #MISE description="Generate HTML output for all known slides directories"
+#
+# This is a file-based task instead of a TOML task because the `{#` is
+# parsed by Tera.
 
 mkdir -p out
 args=()
