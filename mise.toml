@@ -39,4 +39,4 @@ complete "talk_dir" run="mise run talk-directories"
 [tasks.talk-directories]
 hide = true
 quiet = true
-run = "ls -d */ | grep -v ^images/$ | sed 's:/$::g'"
+run = """ls -d */ | grep -v '^\\(images\\|node_modules\\|out\\)/$' | sed 's:/$::g'"""
