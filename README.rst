@@ -7,44 +7,46 @@ NDA-level information).
 Installation
 ------------
 
-This repository uses `uv`_ to manage basic dependencies. ``uv`` does not require an
-installation step.
+This repository uses `mise`_ to manage tool dependencies.
 
-For PDF creation, this repository uses Node.js/yarn.
-
-.. code:: shell
-
-   yarn
-
-Build
------
+Assumes that Python (HTML creation) and Node.js (PDF creation) are
+installed already.
 
 .. code:: shell
 
-   uv run hovercraft $TALK_DIR/index.rst $OUTPUT_DIR
+   mise install
 
-See ``uv run hovercraft --help`` for details.
+Development server
+------------------
 
-PDF
----
-
-To generate a PDF, in one terminal, run:
+Runs a local HTTP server with a "hot reload" feature. By default it
+runs on TCP port ``8888``.
 
 .. code:: shell
 
-   uv run hovercraft --port 8888 $TALK_DIR/index.rst
+   mise run dev [--port custom_port_number] <talk_dir>
+
+Build (HTML)
+------------
+
+.. code:: shell
+
+   mise run build:html <talk_dir> <output_dir>
+
+See ``hovercraft --help`` for details on customization.
+
+Build (PDF)
+-----------
+
+To generate a PDF, in one terminal, run the `development server`_.
 
 In another terminal, run:
 
 .. code:: shell
 
-   yarn decktape impress http://localhost:8888/ path/to/generated.pdf
+   mise run build:pdf [--port custom_port_number] <output_file>
 
-If you wish to include presenter notes in the PDF and the presentation supports it, instead run:
-
-.. code:: shell
-
-   yarn decktape impress http://localhost:8888/?show-notes=1 path/to/generated.pdf
+If you wish to include presenter notes in the PDF and the presentation supports it, add the flag ``--include-presenter-notes``.
 
 License
 -------
@@ -53,7 +55,7 @@ Unless otherwise specified, the example code is copyrighted under the `Apache Li
 content is copyrighted under the `Creative Commons Attribution Share-Alike 4.0 International`_
 license.
 
-.. _uv: https://docs.astral.sh/uv/
+.. _mise: https://mise.jdx.dev/
 .. _Apache License 2.0: https://www.apache.org/licenses/LICENSE-2.0
 .. _Creative Commons Attribution Share-Alike 4.0 International:
    https://creativecommons.org/licenses/by-sa/4.0/

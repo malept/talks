@@ -1,9 +1,0 @@
-[project]
-name = "talks"
-version = "1.0.0"
-description = "Public talks given by the author."
-authors = ["Mark Lee"]
-requires-python = ">=3.6"
-dependencies = [
-  "hovercraft>=2.7"
-]

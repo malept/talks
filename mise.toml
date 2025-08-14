@@ -1,0 +1,42 @@
+[tools]
+"npm:decktape" = "^3.15.0"
+"pipx:hovercraft" = "latest"
+
+[tasks."build:html"]
+description = "Generate HTML output for the given slides directory"
+run = 'hovercraft "$usage_talk_dir/index.rst" "$usage_output_dir"'
+usage = '''
+arg "<talk_dir>" help="The directory containing the ReStructuredText source slides"
+complete "talk_dir" run="mise run talk-directories"
+arg "<output_dir>" help="The directory to generate the HTML output"
+'''
+
+[tasks."build:pdf"]
+description = "Generate PDF output for the given development server"
+run = '''
+#!/usr/bin/env bash
+url="http://localhost:$usage_port/"
+if [[ "$usage_include_presenter_notes" == "true" ]]; then
+  url="$url?show-notes=1"
+fi
+decktape impress "$url" "$usage_output_file"
+'''
+usage = '''
+flag "--port <port>" default="8888" help="The port used by the dev server"
+flag "--include-presenter-notes" help="Whether to include presenter notes"
+arg "<output_file>" help="The path to the generated PDF"
+'''
+
+[tasks."dev"]
+description = "Run hot reloading HTTP server for the given slides directory"
+run = 'hovercraft --port "$usage_port" "$usage_talk_dir"/index.rst'
+usage = '''
+flag "--port <port>" default="8888"
+arg "<talk_dir>" help="The directory containing the ReStructuredText source slides"
+complete "talk_dir" run="mise run talk-directories"
+'''
+
+[tasks.talk-directories]
+hide = true
+quiet = true
+run = """ls -d */ | grep -v '^\\(images\\|node_modules\\|out\\)/$' | sed 's:/$::g'"""
