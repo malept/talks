@@ -1,0 +1,121 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>An Introduction to Stencil</title><meta charset="UTF-8"></meta><meta name="generator" content="Hovercraft! 1.0 http://regebro.github.com/hovercraft"></meta><link rel="stylesheet" href="css/hovercraft.css" media="all"></link><link rel="stylesheet" href="css/highlight.css" media="all"></link><link rel="stylesheet" href="hovercraft.css" media="screen,projection"></link><script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        showProcessingMessages: false,
+        messageStyle: "none",
+        TeX : { extensions : ['color.js'] }
+      });
+    </script></head><body class="impress-not-supported"><div id="impress"><div class="step step-level-1" step="0" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="0" data-y="0" data-z="0"><h1 id="an-introduction-to-stencil">An Introduction to Stencil</h1><a href="https://engineering.outreach.io/stencil/"><img src="images/stencil-logo.png" alt="Stencil" width="50%"></img></a><p>Presenter: Mark Lee</p><p>August 2025</p></div><div class="step step-level-1" step="1" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="1600" data-y="0" data-z="0"><h1 id="what-is-stencil">What is Stencil?</h1><blockquote><p>A modern living-template engine for evolving repositories.</p></blockquote><div class="notes"><p>The upstream version of Stencil describes itself as "a modern living-template engine for
+evolving repositories". I generally refer to it as an advanced project template generator.</p></div></div><div class="step step-level-1" step="2" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="3200" data-y="0" data-z="0"><h1 id="prior-art">Prior Art</h1><ul><li><a href="https://cookiecutter.readthedocs.io/en/stable/">Cookiecutter</a></li><li><a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository">GitHub template repositories</a></li></ul><div class="notes"><p>Some examples of similar, but less advanced tooling include the Cookiecutter CLI from the Python
+ecosystem, and GitHub's template repositories, where you can copy a repository with a click in
+the GitHub UI. The main difference between these tools and Stencil is that rendered files can be
+updated with successive Stencil runs, and "blocks" of custom code within the managed files are preserved.</p></div></div><div class="step step-level-1" step="3" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="4800" data-y="0" data-z="0"><h1 id="history-pre-stencil">History: Pre-Stencil</h1><h2 id="mid-2020-bootstrap-v1-0-0">Mid-2020: Bootstrap v1.0.0</h2><div class="notes"><p>I like to look at things from a historical context to help understand why things are the way they
+are. In this case, the predecessor to Stencil, which was called Bootstrap, was created in light
+of an org-wide initiative to decompose the Ruby on Rails monolith into Go microservices, and the
+need to have those microservices standardized so there is as little friction as possible for any
+given Outreach engineer to get started on any microservice.</p></div></div><div class="step step-level-1" step="4" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="6400" data-y="0" data-z="0"><h1 id="history-stencil-v1-0">History: Stencil v1.0</h1><h2 id="august-2021">August 2021</h2><div class="notes"><p>After months of using Bootstrap, it became clear that ironically, it needed to be split up into
+different repositories, specifically, groups of templates that needed to be owned by different
+teams, instead of having everything stored in one (mono)repo. This was a big enough change to
+necessitate a rewrite, and also a good opportunity to open source the work. As a result, Stencil
+was born. The first major version was released about a year after the first version of Bootstrap.</p></div></div><div class="step step-level-1" step="5" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="8000" data-y="0" data-z="0"><h1 id="ecosystem">Ecosystem</h1><ul><li>CLI</li><li>Repositories<ul><li>Manifest (<tt>service.yaml</tt>)</li><li>Lockfile (<tt>stencil.lock</tt>)</li></ul></li><li>Modules<ul><li>Native Modules</li></ul></li></ul><div class="notes"><p>Let's take a look at the different components of the Stencil ecosystem. The most obvious
+component is the stencil CLI. This is the primary way that engineers interact with Stencil. The
+CLI operates on git repositories, which contain, at minimum, a service manifest currently named
+service.yaml, which are basically configuration options which define how Stencil operates on the
+repository. Once Stencil has been run at least once on the repository, a lockfile (named
+stencil.lock) is created detailing the modules, their versions, and the files that they
+respectively manage. Modules are groups of templates which are rendered by Stencil. Native
+modules provide custom logic that can't be expressed by the default template functions and
+filters. For example, in stencil-golang, there's a function to merge go.mod entries such that
+newer entries override older entries, even if the older entries are specified by the template.</p></div></div><div class="step step-level-1" step="6" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="9600" data-y="0" data-z="0"><h1 id="repository-manifest">Repository: Manifest</h1><p><tt>service.yaml</tt></p><pre class="highlight code yaml"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l-Scalar-Plain">myservice</span><span class="w">
+</span><span class="nt">arguments</span><span class="p">:</span><span class="w">
+  </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l-Scalar-Plain">My new service</span><span class="w">
+  </span><span class="nt">reportingTeam</span><span class="p">:</span><span class="w"> </span><span class="l-Scalar-Plain">my-team</span><span class="w">
+</span><span class="nt">modules</span><span class="p">:</span><span class="w">
+  </span><span class="p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l-Scalar-Plain">github.com/getoutreach/stencil-golang</span></pre><div class="notes"><p>Here's a very short example of a service manifest. "arguments" are repository metadata of which
+the modules defined in the following section define in their own manifest file (example later).</p></div></div><div class="step step-level-1" step="7" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="11200" data-y="0" data-z="0"><h1 id="anatomy-of-a-module">Anatomy of a Module</h1><ul><li>Template manifest (<tt>manifest.yaml</tt>)</li><li>Templates<ul><li>Template blocks</li></ul></li><li>Module hooks</li><li>Native module</li><li>Snapshot tests (Go tests + snapshots)</li></ul><div class="notes"><p>A Stencil module consists of several components. We're going to go through most of them in this
+presentation, but they're explained in much more detail in the Stencil documentation.</p></div></div><div class="step step-level-1" step="8" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="12800" data-y="0" data-z="0"><h1 id="module-manifest">Module: Manifest</h1><p><tt>manifest.yaml</tt></p><pre class="highlight code yaml"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l-Scalar-Plain">stencil-module</span><span class="w">
+</span><span class="nt">modules</span><span class="p">:</span><span class="w">
+  </span><span class="p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l-Scalar-Plain">stencil-dependency</span><span class="w">
+    </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">"^1.0.0"</span><span class="w">
+</span><span class="nt">stencilVersion</span><span class="p">:</span><span class="w"> </span><span class="s">"^1.43.0"</span><span class="w">
+</span><span class="nt">postRunCommand</span><span class="p">:</span><span class="w">
+  </span><span class="p-Indicator">-</span><span class="w"> </span><span class="l-Scalar-Plain">go mod tidy</span><span class="w">
+  </span><span class="p-Indicator">-</span><span class="w"> </span><span class="l-Scalar-Plain">gofmt</span><span class="w">
+</span><span class="nt">arguments</span><span class="p">:</span><span class="w">
+  </span><span class="nt">reportingTeam</span><span class="p">:</span><span class="w">
+    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l-Scalar-Plain">true</span><span class="w">
+    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l-Scalar-Plain">The GitHub codeowner of the service (sans org).</span><span class="w">
+    </span><span class="nt">schema</span><span class="p">:</span><span class="w">
+      </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l-Scalar-Plain">string</span></pre><div class="notes"><p>The format of the template module manifest looks similar to the service manifest, but is
+functionally different. The "modules" section declares which other Stencil modules it depends on
+and the version constraints it requires. There's also a Stencil version constraint, in the event
+that certain features requires a certain Stencil version. "postRunCommand" is a list of commands
+that are run after all of the templates for this module have been rendered. Finally, "arguments"
+in this context actually define the arguments used by this module whose values are declared in
+the service manifest.</p></div></div><div class="step step-level-1" step="9" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="14400" data-y="0" data-z="0"><h1 id="module-template">Module: Template</h1><h2 id="app-go-tpl"><tt>app.go.tpl</tt></h2><pre class="highlight code jinja"><span class="x">import fmt
+
+func main() {
+  fmt.Println("Hello, world")
+  </span><span class="cp">{{</span><span class="o">-</span> <span class="k">if</span> <span class="nv">stencil.Arg</span> <span class="s2">"optional"</span> <span class="cp">}}</span><span class="x">
+  fmt.Println("Optional print statement")
+  </span><span class="cp">{{</span><span class="o">-</span> <span class="nv">end</span> <span class="cp">}}</span><span class="x">
+  // &lt;&lt;Stencil::Block(appCustom)&gt;&gt;
+  </span><span class="cp">{{</span> <span class="nv">file.Block</span> <span class="s2">"appCustom"</span> <span class="cp">}}</span><span class="x">
+  // &lt;&lt;/Stencil::Block&gt;
+}</span></pre><h2 id="app-go"><tt>app.go</tt></h2><pre class="highlight code go"><span class="kn">import</span><span class="w"> </span><span class="nx">fmt</span><span class="w">
+
+</span><span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"Hello, world"</span><span class="p">)</span><span class="w">
+
+  </span><span class="c1">// &lt;&lt;Stencil::Block(appCustom)&gt;&gt;</span><span class="w">
+  </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">"Custom print statement"</span><span class="p">)</span><span class="w">
+  </span><span class="c1">// &lt;&lt;/Stencil::Block&gt;</span><span class="w">
+</span><span class="p">}</span></pre><div class="notes"><p>Here's an example of a small Go program as a Go template, and how it looks when rendered in
+a Stenciled repository. There's also an example of a template block. The print statement in
+the block will persist amongst Stencil runs.</p></div></div><div class="step step-level-1" step="10" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="16000" data-y="0" data-z="0"><h1 id="module-hooks">Module: Hooks</h1><h2 id="stencil-dependency-require-go-tpl"><tt>stencil-dependency</tt>: <tt>require.go.tpl</tt></h2><pre class="highlight code jinja"><span class="x">require (
+  "github.com/getoutreach/goql"
+  </span><span class="cp">{{</span><span class="o">-</span> <span class="nv">range</span> <span class="nv">stencil.GetModuleHook</span> <span class="s2">"go-requires"</span> <span class="cp">}}</span><span class="x">
+  </span><span class="cp">{{</span> <span class="nv">printf</span> <span class="s2">"%q"</span> <span class="nv">.name</span> <span class="cp">}}</span><span class="x">
+  </span><span class="cp">{{</span><span class="o">-</span> <span class="nv">end</span> <span class="cp">}}</span><span class="x">
+)</span></pre><h2 id="stencil-module-require-go-tpl"><tt>stencil-module</tt>: <tt>require.go.tpl</tt></h2><pre class="highlight code jinja"><span class="cp">{{</span><span class="o">-</span> <span class="nv">file.Skip</span> <span class="s2">"Defines module hooks for require.go.tpl"</span> <span class="cp">}}</span><span class="x">
+</span><span class="cp">{{</span><span class="o">-</span> <span class="nv">define</span> <span class="s2">"goRequires"</span> <span class="cp">}}</span><span class="x">
+- github.com/getoutreach/stencil
+- github.com/getoutreach/vault-client
+</span><span class="cp">{{</span><span class="o">-</span> <span class="nv">end</span> <span class="cp">}}</span><span class="x">
+</span><span class="cp">{{</span> <span class="nv">stencil.AddToModuleHook</span> <span class="s2">"github.com/getoutreach/stencil-dependency"</span>
+   <span class="s2">"go-requires"</span>
+   <span class="o">(</span><span class="nv">stencil.ApplyTemplate</span> <span class="s2">"goRequires"</span> <span class="o">|</span> <span class="nf">fromYaml</span><span class="o">)</span> <span class="cp">}}</span></pre><h2 id="require-go"><tt>require.go</tt></h2><pre class="highlight code go"><span class="nx">require</span><span class="w"> </span><span class="p">(</span><span class="w">
+  </span><span class="s">"github.com/getoutreach/goql"</span><span class="w">
+  </span><span class="s">"github.com/getoutreach/stencil"</span><span class="w">
+  </span><span class="s">"github.com/getoutreach/vault-client"</span><span class="w">
+</span><span class="p">)</span></pre><div class="notes"><p>This is a very contrived example of how module hooks work. It's defined in a "parent" module, and
+the "child" adds a module hook to pass their context to it in order to render the actual file.
+The child template is considered a "virtual" file that is there only for defining the module
+hooks.</p></div></div><div class="step step-level-1" step="11" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="17600" data-y="0" data-z="0"><h1 id="module-snapshot-tests">Module: Snapshot tests</h1><p><tt>main_test.go</tt></p><pre class="highlight code go"><span class="kn">import</span><span class="w"> </span><span class="p">(</span><span class="w">
+  </span><span class="s">"testing"</span><span class="w">
+
+  </span><span class="s">"github.com/getoutreach/stencil/pkg/stenciltest"</span><span class="w">
+</span><span class="p">)</span><span class="w">
+
+</span><span class="kd">func</span><span class="w"> </span><span class="nx">TestAppGo</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nx">st</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">stenciltest</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="s">"app.go.tpl"</span><span class="p">)</span><span class="w">
+  </span><span class="nx">st</span><span class="p">.</span><span class="nx">Run</span><span class="p">(</span><span class="nx">stenciltest</span><span class="p">.</span><span class="nx">RegenerateSnapshots</span><span class="p">())</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span><span class="kd">func</span><span class="w"> </span><span class="nx">TestAppGoOptional</span><span class="p">(</span><span class="nx">t</span><span class="w"> </span><span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nx">st</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">stenciltest</span><span class="p">.</span><span class="nx">New</span><span class="p">(</span><span class="nx">t</span><span class="p">,</span><span class="w"> </span><span class="s">"app.go.tpl"</span><span class="p">)</span><span class="w">
+  </span><span class="nx">st</span><span class="p">.</span><span class="nx">Args</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">any</span><span class="p">{</span><span class="s">"optional"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">})</span><span class="w">
+  </span><span class="nx">st</span><span class="p">.</span><span class="nx">Run</span><span class="p">(</span><span class="nx">stenciltest</span><span class="p">.</span><span class="nx">RegenerateSnapshots</span><span class="p">())</span><span class="w">
+</span><span class="p">}</span></pre><div class="notes"><p>Much like other snapshot tests (for example, Jest), there is a code part which declares what gets
+snapshotted, and the actual snapshot (not shown here) which is generated / updated via the Run
+method. In CI, Run checks the existing snapshot and fails if the existing snapshot does not
+match the generated snapshot.</p></div></div><div class="step step-level-1" step="12" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="19200" data-y="0" data-z="0"><h1 id="roadmap">Roadmap</h1><ul><li>Ecosystem testing</li><li>Interactive Stenciled repository creation</li><li>Work with upstream to find a good upgrade path</li><li>Migrate to upstream</li></ul><div class="notes"><p>So the question becomes: what's next? One of the main initiatives for the team this year is to
+reduce the amount of scope that the team owns, given the amount of headcount allocated to it. Add
+to that the fact that the original author of Stencil has forked it and continued development,
+this is a good opportunity to migrate to the upstream version and discontinue maintaining our
+older copy of it. As it currently stands, there are some breaking (manual) changes between our
+version and the upstream version, which will need to get reconciled before we can
+start migrating. Of note is that the module testing framework was completely ripped out of the
+upstream version, and the upstream developers will be working with us on developing a more mature
+framework that handles all of the use cases that we've seen in our existing modules.
+We are also working on a tool to test changes to Stencil modules across the entire ecosystem, and
+a service to interactively create Stenciled repositories.</p></div></div><div class="step step-level-1" step="13" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="20800" data-y="0" data-z="0"><h1 id="sources">Sources</h1><ul><li><a href="https://engineering.outreach.io/stencil/">Stencil documentation</a></li><li><a href="https://web.archive.org/web/20250319031303/https://jaredallard.dev/focus-on-business-logic-not-the-rest/">Focus on Business Logic, not the Rest</a></li><li><a href="https://web.archive.org/web/20250319034341/https://jaredallard.dev/stencil-v2/">stencil v2</a></li></ul></div><div class="step step-level-1" step="14" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="22400" data-y="0" data-z="0"><h1 id="questions">Questions&#x2753;</h1><a href="https://stencil.rgst.io/"><img src="images/stencil-logo.png" alt="Stencil" width="50%"></img></a></div></div><script type="text/javascript" src="js/impress.js"></script><script type="text/javascript" src="js/gotoSlide.js"></script><script type="text/javascript" src="js/hovercraft.js"></script><script type="text/javascript" src="plugins/print-notes.js"></script></body></html>
