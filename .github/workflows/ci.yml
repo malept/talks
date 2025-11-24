@@ -14,7 +14,7 @@ jobs:
     - name: Fetch all git branches
       run: git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
     - name: Install dependencies via mise
-      uses: jdx/mise-action@d16887ba50704baed7de72bd1e82e04391e4457a # v3.5.0
+      uses: jdx/mise-action@146a28175021df8ca24f8ee1828cc2a60f980bd5 # v3.5.1
     - name: Run hovercraft
       run: mise run build:html:all
     - name: Publish to GitHub Pages
